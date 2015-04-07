@@ -11,10 +11,11 @@ public class SortTest {
 		//selectSort(a);
 		//heapSort(a);
 		//bobbleSort(a);
-		quickSort(a, 0, a.length-1);
+		//quickSort(a, 0, a.length-1);
+		mergeSort(a, 0, a.length-1);
 		print("排序之后：", a);
 	}
-	//1.插入排序，使用与少量数据的排序，时间复杂度O(n2)， 是稳定的排序算法，原地排序。
+	//1.插入排序，适用于少量数据的排序，时间复杂度O(n2)， 是稳定的排序算法，原地排序。
 	private static void  insertSort(int[] array) { //main方法是静态的，只能调用static方法，所以这些方法也得是静态的
 		for (int i = 1; i < array.length; i++) {
 			//待插入元素
@@ -83,7 +84,8 @@ public class SortTest {
 			swap(array, i, n);
 		}
 	}
-	//4.堆排序，不稳定，O(nlogn)是一种树形选择排序，是对直接选择排序的有效改进。堆排序通过树形结构保存部分比较结果，可减少比较次数。
+	//4.堆排序，不稳定，O(nlogn)是一种树形选择排序，是对直接选择排序的有效改进。
+	//堆排序通过树形结构保存部分比较结果，可减少比较次数。
 	private static void heapSort(int[] array) {
 		//循环建堆
 		for(int i = 0; i < array.length; i++) {
@@ -174,8 +176,37 @@ public class SortTest {
 			quickSort(array, i+1, end);
 		}
 	}
+	//7.归并排序，稳定排序，非原地排序，空间复杂度O(n)，时间复杂度O(nlongn)
+	private static void mergeSort(int array[], int low, int high) {
+		if (low < high)
+		{
+			mergeSort(array, low, (low + high) / 2);
+			mergeSort(array, (low + high) / 2 + 1, high);
+			merge(array, low, (low + high) / 2, high);
+		}
+	}
+	//归并辅助方法，合并
+	private static void merge(int[] array, int low, int mid, int high) {
+		int[] b = new int[high - low + 1];
+		int s = low;
+		int t = mid + 1;
+		int k = 0;
+		while(s <= mid && t <= high) {
+			if (array[s] <= array[t])
+			{
+				b[k++] = array[s++];
+			}else {
+				b[k++] = array[t++];
+			}
+		}
+		while(s <= mid) b[k++] = array[s++];
+		while(t <= high)b[k++] = array[t++];
+	    for (int i = 0; i < b.length; i++)
+		{
+			array[low + i] = b[i];
+		}
+	}
 	//交换
-
 	private static void swap(int[] array, int i, int j) {
 		int temp = array[i];
 		array[i] = array[j];
