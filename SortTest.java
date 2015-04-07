@@ -1,4 +1,6 @@
 //package com.sort; 添加了package之后，直接java SortTest会报错java.lang.NoClassDefFoundError
+import java.util.ArrayList;
+import java.util.List;
 
 public class SortTest {
 	public static void main(String[] args) {
@@ -12,7 +14,8 @@ public class SortTest {
 		//heapSort(a);
 		//bobbleSort(a);
 		//quickSort(a, 0, a.length-1);
-		mergeSort(a, 0, a.length-1);
+		//mergeSort(a, 0, a.length-1);
+		radixSort(a);
 		print("排序之后：", a);
 	}
 	//1.插入排序，适用于少量数据的排序，时间复杂度O(n2)， 是稳定的排序算法，原地排序。
@@ -177,6 +180,7 @@ public class SortTest {
 		}
 	}
 	//7.归并排序，稳定排序，非原地排序，空间复杂度O(n)，时间复杂度O(nlongn)
+	// 速度仅次于快排，一般用于对总体无序，但是各子项相对有序的数列
 	private static void mergeSort(int array[], int low, int high) {
 		if (low < high)
 		{
@@ -204,6 +208,55 @@ public class SortTest {
 	    for (int i = 0; i < b.length; i++)
 		{
 			array[low + i] = b[i];
+		}
+	}
+	//8.基数排序，稳定，时间复杂度O(d(n+r)),d为位数，r为基数
+	private static void radixSort(int[] array) {
+		//找到最大数，确定要排序几趟
+		int max = 0;
+		for (int i = 0; i < array.length; i++)
+		{
+			if (max < array[i])
+			{
+				max = array[i];
+			}
+		}
+		//判断位数
+		int times = 0;
+		while(max > 0){
+			max = max / 10;
+			times++;
+		} 
+		//建立十个队列
+		List<ArrayList> queue = new ArrayList<ArrayList>();
+		for (int i = 0; i < 10; i++)
+		{
+			ArrayList queue1 = new ArrayList();
+			queue.add(queue1);
+		}
+		//进行times次分配和收集
+		for (int i = 0; i < times; i++)
+		{
+			//分配
+			for (int j = 0; j < array.length; j++)
+			{
+				int x = array[j] % (int)Math.pow(10, i+1) /(int)Math.pow(10, i);//注意这里是i不是j
+				ArrayList queue2 = queue.get(x);
+				queue2.add(array[j]);
+				queue.set(x, queue2);
+			}
+			//收集
+			int count = 0;
+		    for (int j = 0; j < 10; j++)
+		    {
+			    while (queue.get(j).size() > 0)
+			    {
+				    ArrayList<Integer> queue3 = queue.get(j);
+				    array[count] = queue3.get(0);
+				    queue3.remove(0);
+				    count++;
+			    }
+		    }
 		}
 	}
 	//交换
